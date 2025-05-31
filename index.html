@@ -2,14 +2,202 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
-    <title>Politique et Conditions - Meta App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 Blink Meta Privacy - Documents Légaux & Webhooks</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1877f2;
+            border-bottom: 3px solid #1877f2;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .section {
+            margin: 2rem 0;
+        }
+        .section h2 {
+            color: #343a40;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .card {
+            border: 1px solid #e4e6ea;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+        .card:hover {
+            border-color: #1877f2;
+            box-shadow: 0 8px 25px rgba(24, 119, 242, 0.15);
+            transform: translateY(-3px);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #1877f2;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card p {
+            margin: 0.5rem 0;
+            color: #65676b;
+        }
+        .badge {
+            display: inline-block;
+            background: #1877f2;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+        .badge.webhook {
+            background: #28a745;
+        }
+        .badge.legal {
+            background: #17a2b8;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e4e6ea;
+            color: #65676b;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .highlight-box h3 {
+            margin: 0 0 0.5rem 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Politique de confidentialité et Conditions de service</h1>
-    <p>Consultez les documents :</p>
-    <ul>
-        <li><a href="PRIVACY_POLICY.md">Politique de confidentialité</a></li>
-        <li><a href="TERMS_OF_SERVICE.md">Conditions de service</a></li>
-    </ul>
+    <div class="container">
+        <h1>📱 Blink Meta Privacy</h1>
+        <p>Solution complète pour la conformité Meta for Developers : documents légaux et monitoring des webhooks Instagram en temps réel.</p>
+        
+        <div class="highlight-box">
+            <h3>🎯 Prêt pour Meta for Developers !</h3>
+            <p>Tous les outils nécessaires pour votre application Instagram/Facebook</p>
+        </div>
+
+        <div class="section">
+            <h2>📋 Documents Légaux</h2>
+            <div class="cards">
+                <a href="PRIVACY_POLICY.md" class="card">
+                    <h3>🔒 Politique de Confidentialité</h3>
+                    <p>Politique complète conforme au RGPD et aux exigences Meta. Couvre la collecte, l'utilisation et la protection des données personnelles.</p>
+                    <span class="badge legal">Conforme Meta</span>
+                </a>
+                
+                <a href="TERMS_OF_SERVICE.md" class="card">
+                    <h3>📄 Conditions d'Utilisation</h3>
+                    <p>Conditions d'utilisation détaillées pour votre application, incluant les règles d'usage et les limitations de responsabilité.</p>
+                    <span class="badge legal">Conforme Meta</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📡 Outils de Développement</h2>
+            <div class="cards">
+                <a href="webhook-viewer.html" class="card">
+                    <h3>🔍 Visualiseur de Webhooks</h3>
+                    <p>Interface web pour monitorer et visualiser en temps réel tous les webhooks Instagram reçus par votre application.</p>
+                    <p><small><span class="status-indicator"></span>Connexion à votre serveur webhook</small></p>
+                    <span class="badge webhook">Temps Réel</span>
+                </a>
+                
+                <a href="instagram-webhook-logger/" class="card">
+                    <h3>⚙️ Serveur Webhook</h3>
+                    <p>Mini serveur Node.js complet pour capturer les événements Instagram avec interface de debugging intégrée.</p>
+                    <p><small>🚀 Déployable sur Vercel, Railway, Heroku</small></p>
+                    <span class="badge">Open Source</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Configuration Meta</h2>
+            <div style="background: #e7f3ff; border: 1px solid #b8daff; border-radius: 8px; padding: 1.5rem;">
+                <h4 style="margin: 0 0 1rem 0; color: #0c5460;">📋 URLs à utiliser dans Meta for Developers :</h4>
+                <ul style="margin: 0; padding-left: 1.5rem;">
+                    <li><strong>Politique de confidentialité :</strong> <code>https://wnizard.github.io/blink-meta-privacy/PRIVACY_POLICY.md</code></li>
+                    <li><strong>Conditions d'utilisation :</strong> <code>https://wnizard.github.io/blink-meta-privacy/TERMS_OF_SERVICE.md</code></li>
+                    <li><strong>URL webhook :</strong> <code>https://[votre-serveur]/webhook</code></li>
+                    <li><strong>Token de vérification :</strong> <code>instagram_webhook_secret_2024</code></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🚀 Hébergé sur GitHub Pages | ⚡ Mis à jour automatiquement</p>
+            <p><small>Dernière mise à jour : <span id="lastUpdate"></span></small></p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('fr-FR');
+        
+        // Vérifier si le serveur webhook local est accessible
+        async function checkWebhookServer() {
+            try {
+                const response = await fetch('http://localhost:3000/api/logs');
+                if (response.ok) {
+                    document.querySelector('.status-indicator').style.background = '#28a745';
+                }
+            } catch (error) {
+                document.querySelector('.status-indicator').style.background = '#dc3545';
+            }
+        }
+        
+        // Vérifier au chargement
+        checkWebhookServer();
+    </script>
 </body>
 </html>
