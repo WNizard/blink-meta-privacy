@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 Instagram Webhook Viewer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .connection-section {
+            padding: 1rem 2rem;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .connection-form {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .form-group label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-connected { background: #28a745; }
+        .status-disconnected { background: #dc3545; }
+        .status-connecting { background: #ffc107; }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .logs-container {
+            padding: 1rem 2rem;
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            background: white;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        
+        .log-entry:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .log-header {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .log-type {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .log-type-WEBHOOK { background: #d4edda; color: #155724; }
+        .log-type-VERIFICATION { background: #d1ecf1; color: #0c5460; }
+        .log-type-MESSAGE { background: #fff3cd; color: #856404; }
+        .log-type-MEDIA { background: #f8d7da; color: #721c24; }
+        .log-type-ERROR { background: #f5c6cb; color: #721c24; }
+        .log-type-SUCCESS { background: #d4edda; color: #155724; }
+        .log-type-SYSTEM { background: #e2e3e5; color: #383d41; }
+        .log-type-TEST { background: #cce5ff; color: #004085; }
+        
+        .log-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .log-content {
+            padding: 0 1rem 1rem;
+            border-top: 1px solid #e9ecef;
+            display: none;
+        }
+        
+        .log-content.expanded {
+            display: block;
+        }
+        
+        .json-viewer {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 1rem;
+        }
+        
+        .stats-bar {
+            background: #e9ecef;
+            padding: 0.5rem 2rem;
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            margin: 1rem 2rem;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .instructions {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 2rem;
+        }
+        
+        .instructions h4 {
+            margin-bottom: 0.5rem;
+            color: #0c5460;
+        }
+        
+        .instructions ol {
+            margin-left: 1.5rem;
+        }
+        
+        .instructions li {
+            margin: 0.25rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 Instagram Webhook Viewer</h1>
+        <p>Visualiseur de logs Instagram webhook - Compatible GitHub Pages</p>
+    </div>
+    
+    <div class="connection-section">
+        <div class="connection-form">
+            <div class="form-group">
+                <label>URL du serveur webhook</label>
+                <input type="url" id="serverUrl" placeholder="https://votre-serveur.com" value="http://localhost:3000">
+            </div>
+            <button class="btn btn-primary" onclick="connectToServer()">🔗 Connecter</button>
+            <button class="btn btn-success" onclick="refreshLogs()" id="refreshBtn" disabled>🔄 Actualiser</button>
+            <button class="btn btn-danger" onclick="clearRemoteLogs()" id="clearBtn" disabled>🗑️ Clear</button>
+            
+            <div class="status">
+                <div id="connectionStatus" class="status-dot status-disconnected"></div>
+                <span id="connectionText">Non connecté</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats-bar">
+        <div class="stat-item">📊 Total logs: <span id="logCount">0</span></div>
+        <div class="stat-item">🕐 Dernière actualisation: <span id="lastRefresh">-</span></div>
+        <div class="stat-item">📡 Serveur: <span id="currentServer">-</span></div>
+    </div>
+    
+    <div class="instructions">
+        <h4>📋 Instructions de connexion</h4>
+        <ol>
+            <li>Démarrez votre serveur webhook Instagram</li>
+            <li>Entrez l'URL du serveur ci-dessus (ex: http://localhost:3000)</li>
+            <li>Cliquez sur "Connecter" pour récupérer les logs</li>
+            <li>Les nouveaux logs apparaîtront automatiquement</li>
+        </ol>
+        <p><strong>💡 Astuce:</strong> Pour exposer votre serveur local, utilisez <code>ngrok http 3000</code></p>
+    </div>
+    
+    <div class="logs-container">
+        <div id="logsContainer">
+            <div class="empty-state">
+                <h3>🔍 Connectez-vous à un serveur webhook</h3>
+                <p>Les logs Instagram apparaîtront ici une fois connecté</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentServerUrl = '';
+        let logs = [];
+        let pollingInterval = null;
+        
+        // Charger l'URL depuis localStorage
+        const savedUrl = localStorage.getItem('webhookServerUrl');
+        if (savedUrl) {
+            document.getElementById('serverUrl').value = savedUrl;
+        }
+        
+        function setConnectionStatus(status, text) {
+            const statusDot = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('connectionText');
+            
+            statusDot.className = `status-dot status-${status}`;
+            statusText.textContent = text;
+            
+            // Activer/désactiver les boutons
+            const refreshBtn = document.getElementById('refreshBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            if (status === 'connected') {
+                refreshBtn.disabled = false;
+                clearBtn.disabled = false;
+            } else {
+                refreshBtn.disabled = true;
+                clearBtn.disabled = true;
+            }
+        }
+        
+        function showError(message) {
+            const container = document.getElementById('logsContainer');
+            container.innerHTML = `
+                <div class="error-message">
+                    <strong>❌ Erreur de connexion</strong><br>
+                    ${message}
+                </div>
+                <div class="empty-state">
+                    <h3>🔍 Vérifiez votre serveur webhook</h3>
+                    <p>Assurez-vous que le serveur est démarré et accessible</p>
+                </div>
+            `;
+        }
+        
+        async function connectToServer() {
+            const serverUrl = document.getElementById('serverUrl').value.trim();
+            
+            if (!serverUrl) {
+                alert('Veuillez entrer une URL de serveur');
+                return;
+            }
+            
+            // Nettoyer l'URL (supprimer le slash final)
+            currentServerUrl = serverUrl.replace(/\/$/, '');
+            
+            // Sauvegarder dans localStorage
+            localStorage.setItem('webhookServerUrl', currentServerUrl);
+            
+            setConnectionStatus('connecting', 'Connexion...');
+            document.getElementById('currentServer').textContent = currentServerUrl;
+            
+            try {
+                const response = await fetch(`${currentServerUrl}/api/logs`);
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    logs = data.logs || [];
+                    renderLogs();
+                    setConnectionStatus('connected', 'Connecté');
+                    updateLastRefresh();
+                    
+                    // Démarrer le polling pour les mises à jour
+                    startPolling();
+                } else {
+                    throw new Error('Réponse serveur invalide');
+                }
+                
+            } catch (error) {
+                console.error('Erreur de connexion:', error);
+                setConnectionStatus('disconnected', 'Erreur');
+                showError(`Impossible de se connecter à ${currentServerUrl}<br>Détails: ${error.message}`);
+                stopPolling();
+            }
+        }
+        
+        function startPolling() {
+            stopPolling(); // Arrêter le polling existant
+            
+            // Polling toutes les 3 secondes
+            pollingInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${currentServerUrl}/api/logs`);
+                    const data = await response.json();
+                    
+                    if (data.success && data.logs.length !== logs.length) {
+                        logs = data.logs;
+                        renderLogs();
+                        updateLastRefresh();
+                    }
+                } catch (error) {
+                    console.error('Erreur polling:', error);
+                    setConnectionStatus('disconnected', 'Connexion perdue');
+                    stopPolling();
+                }
+            }, 3000);
+        }
+        
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+        }
+        
+        function renderLogs() {
+            const container = document.getElementById('logsContainer');
+            
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>🔍 En attente des webhooks...</h3>
+                        <p>Les événements Instagram apparaîtront ici</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = logs.map(log => `
+                <div class="log-entry" style="border-left-color: ${getTypeColor(log.type)}">
+                    <div class="log-header" onclick="toggleLogContent('${log.id}')">
+                        <span class="log-type log-type-${log.type}">${log.type}</span>
+                        <span class="log-time">${formatTime(log.timestamp)}</span>
+                    </div>
+                    <div class="log-content" id="content-${log.id}">
+                        <div class="json-viewer">${JSON.stringify(log.data, null, 2)}</div>
+                        ${log.headers ? `<h4>Headers:</h4><div class="json-viewer">${JSON.stringify(log.headers, null, 2)}</div>` : ''}
+                        ${log.ip ? `<p><strong>IP:</strong> ${log.ip}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('logCount').textContent = logs.length;
+        }
+        
+        function getTypeColor(type) {
+            const colors = {
+                'WEBHOOK': '#28a745',
+                'VERIFICATION': '#17a2b8',
+                'MESSAGE': '#ffc107',
+                'MEDIA': '#dc3545',
+                'ERROR': '#dc3545',
+                'SUCCESS': '#28a745',
+                'SYSTEM': '#6c757d',
+                'TEST': '#007bff'
+            };
+            return colors[type] || '#007bff';
+        }
+        
+        function formatTime(timestamp) {
+            return new Date(timestamp).toLocaleString('fr-FR');
+        }
+        
+        function toggleLogContent(logId) {
+            const content = document.getElementById(`content-${logId}`);
+            if (content) {
+                content.classList.toggle('expanded');
+            }
+        }
+        
+        function updateLastRefresh() {
+            document.getElementById('lastRefresh').textContent = formatTime(new Date());
+        }
+        
+        async function refreshLogs() {
+            if (!currentServerUrl) return;
+            
+            try {
+                const response = await fetch(`${currentServerUrl}/api/logs`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    logs = data.logs;
+                    renderLogs();
+                    updateLastRefresh();
+                }
+            } catch (error) {
+                console.error('Erreur refresh:', error);
+                setConnectionStatus('disconnected', 'Erreur');
+            }
+        }
+        
+        async function clearRemoteLogs() {
+            if (!currentServerUrl) return;
+            
+            if (!confirm('Supprimer tous les logs sur le serveur ?')) return;
+            
+            try {
+                const response = await fetch(`${currentServerUrl}/api/logs`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    logs = [];
+                    renderLogs();
+                    updateLastRefresh();
+                }
+            } catch (error) {
+                console.error('Erreur clear:', error);
+                alert('Erreur lors de la suppression des logs');
+            }
+        }
+        
+        // Auto-connexion si URL sauvegardée
+        if (savedUrl) {
+            setTimeout(connectToServer, 1000);
+        }
+        
+        // Nettoyage lors de la fermeture de la page
+        window.addEventListener('beforeunload', () => {
+            stopPolling();
+        });
+        
+        // Gérer la touche Entrée dans le champ URL
+        document.getElementById('serverUrl').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                connectToServer();
+            }
+        });
+    </script>
+</body>
+</html> 
